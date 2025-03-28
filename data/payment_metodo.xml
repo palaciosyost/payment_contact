@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data >
+    
+        <record id="payment_method_yape" model="payment.method">
+            <field name="name">Pago con Yape</field>
+            <field name="provider_code">pago_yape</field> <!-- Debe coincidir con tu código -->
+            <field name="payment_type">inbound</field>
+            <field name="active">True</field>
+        </record>
+    
+    </data>
+</odoo>
