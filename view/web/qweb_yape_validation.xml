@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="pago_yape" name="Yape - Pago" inherit_id="website_sale.confirmation">
+		<xpath expr="//t[@t-call='website_sale.checkout_layout']" position="replace">
+			<t t-call="website_sale.checkout_layout">
+				<t t-set="show_wizard_checkout" t-value="False" />
+				<t t-set="show_navigation_button" t-value="False" />
+				<t t-set="show_footer" t-value="True" />
+				<t t-set="additional_title">
+					Shop - Confirmed
+				</t>
+				<t t-set="hide_promotions" t-value="True" />
+				<t t-set="oe_structure">
+					<!--
+					This is the drag-and-drop area for website building blocs at the end of each
+					checkout page. This is append at the of the page in `checkout_layout`. The
+					templates created in the database to store blocs are hooked using XPath on the
+					`oe_struture` element ID. Therefore, we can't use dynamic IDs (like with
+					t-att-id) and each template needs to define a div element.
+					-->
+					<div class="oe_structure" id="oe_structure_website_sale_confirmation_3" />
+				</t>
+				<t t-set="tx_sudo" t-value="order.get_portal_last_transaction()" />
+				<!-- <t t-esc="order.state"/> -->
+				<!-- <t t-esc="payment_provider.name"/> -->
+				<div t-if="tx_sudo.state in ['pending', 'done'] or order.state in ['sent', 'pending'] " class="d-flex justify-content-between align-items-center">
+					<h3>
+						Thank you for your order.
+					</h3>
+					<a role="button" class="d-none d-md-inline-block btn btn-primary ms-auto" href="/shop/print" target="_blank" aria-label="Print" title="Print">
+						<i class="fa fa-print me-2" />
+						Print
+					</a>
+				</div>
+				<t t-if="tx_sudo.state == 'done'">
+					<div class="mb-4">
+						<h5>
+							<em>
+								<span>
+									Order
+								</span>
+								<span t-field="order.name" />
+								<t t-if="order.state == 'sale'">
+									<i class="fa fa-check-circle ms-1" />
+								</t>
+							</em>
+						</h5>
+					</div>
+				</t>
+				<t t-if="request.env['res.users']._get_signup_invitation_scope() == 'b2c' and request.website.is_public_user()">
+					<p class="alert alert-info mt-3" role="status">
+						<a role="button" t-att-href="order.partner_id.signup_prepare() and order.partner_id.with_context(relative_url=True).signup_url" class="btn btn-primary">
+							Sign Up
+						</a>
+						to follow your order.
+					</p>
+				</t>
+				<div class="oe_structure clearfix mt-3" id="oe_structure_website_sale_confirmation_1" />
+				<h4 class="text-start mt-3">
+					Payment Information
+				</h4>
+				<table class="table">
+					<tbody>
+						<tr>
+							<td colspan="2" class="ps-0">
+								<t t-if="not payment_provider">
+									<t t-esc="tx_sudo.provider_id.name" />
+								</t>
+								<t t-else="">
+									<t t-esc="payment_provider.name" />
+								</t>
+							</td>
+							<td class="text-end pe-0" width="100">
+								<strong>
+									Total:
+								</strong>
+							</td>
+							<td class="text-end pe-0" width="100">
+								<t t-if="not payment_provider">
+									<strong t-field="tx_sudo.amount" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}" />
+								</t>
+								<t t-else="">
+									<strong t-field="order.amount_total" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}" />
+								</t>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<t t-if="payment_provider and payment_provider.code == 'yape'">
+					<div class="mt-5 mb-5 px-3">
+						<!-- Alerta -->
+						<div class="alert alert-warning text-center shadow-sm rounded" style="font-size: 16px;">
+							⚠️ Una vez realizado el pago, nuestro equipo validará tu pedido y se pondrá en contacto contigo.
+						</div>
+						<!-- WhatsApp CTA -->
+						<div class="text-center mt-4">
+							<h5 class="fw-bold">
+								¿Ya realizaste el pago?
+							</h5>
+							<p>
+								Envía tu orden directamente por WhatsApp para agilizar la validación:
+							</p>
+							<a href="/shop/cart/whatsapp" class="btn btn-success d-inline-flex align-items-center justify-content-center shadow" style="width: 300px; border-radius: 14px; padding: 12px 20px; font-size: 16px; font-weight: 600;">
+								<img src="https://static.vecteezy.com/system/resources/previews/023/986/589/non_2x/whatsapp-logo-whatsapp-logo-transparent-whatsapp-icon-transparent-free-free-png.png" width="28" style="margin-right: 10px;" />
+								Enviar por WhatsApp
+							</a>
+						</div>
+						<!-- Bloque Yape -->
+						<div class="card mt-5 shadow-sm border-0" style="background-color: #f7f4fa; border-radius: 16px;">
+							<div class="card-body text-center">
+								<h4 class="fw-bold mb-3 text-dark">
+									Gracias por tu pedido 🙌
+								</h4>
+								<p class="text-muted mb-4">
+									Por favor completa el pago vía
+									<strong>
+										Yape
+									</strong>
+									escaneando el siguiente código QR:
+								</p>
+								<span t-if="payment_provider.yape_qr" t-field="payment_provider.yape_qr" t-options="{&quot;widget&quot;: &quot;image&quot;}" class="img img-fluid d-block mx-auto" style="max-width: 300px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);" />
+								<div class="mt-4">
+									<p class="mb-1">
+										<strong>
+											👤 Titular:
+										</strong>
+										<t t-esc="payment_provider.yape_holder_name" />
+									</p>
+									<p>
+										<strong>
+											📱 Teléfono:
+										</strong>
+										<t t-esc="payment_provider.yape_phone" />
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</t>
+				<t t-else="">
+					<t t-call="website_sale.payment_confirmation_status" />
+					<div id="address_on_confirmation" class="mt-3">
+						<t t-call="website_sale.address_on_payment">
+							<t t-set="disable_edit" t-value="True" />
+						</t>
+					</div>
+					<div class="oe_structure mt-3" id="oe_structure_website_sale_confirmation_2" />
+					<input t-if="website.plausible_shared_key" type="hidden" class="js_plausible_push" data-event-name="Shop" t-attf-data-event-params="{&quot;CTA&quot;: &quot;Order Confirmed&quot;, &quot;amount&quot;: &quot;#{&quot;%3s-%3s&quot; % (max(0, round(website_sale_order.amount_total/100)*100 - 50), round(website_sale_order.amount_total/100)*100 + 50)}&quot;}" />
+				</t>
+			</t>
+		</xpath>
+	</template>
+</odoo>

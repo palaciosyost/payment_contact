@@ -5,7 +5,7 @@
         <field name="code">yape</field>
         <field name="image" type="base64" file="payment_contact/static/description/yape.png"/>
         <field name="active">True</field>
-        <!-- <field name="provider_ids" eval="[(4, ref('payment_provider_yape'))]"/> -->
+        <field name="provider_ids" eval="[(4, ref('payment_provider_yape'))]"/>
         <field name="support_tokenization">False</field>
         <field name="support_express_checkout">False</field>
         <field name="support_refund"></field>

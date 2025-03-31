@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="payment_provider_yape" model="payment.provider">
-        <!-- <field name="name">Pago con Yape</field> -->
+        <field name="name">Yape</field>
         <field name="code">yape</field>
-        <field name="redirect_form_view_id" ref="payment.redirect_form"/>
+        <!-- <field name="redirect_form_view_id" ref="payment.redirect_form"/> -->
         <field name="state">enabled</field>
-        <field name="sequence">10</field>
-        <field name="payment_method_ids"
-                    eval="[Command.set([
-                                ref('payment_contact.payment_method_yape'),
-                            ])]"
-                />        
+        <field name="sequence">10</field> 
         <field name="image_128" type="base64" file="payment_contact/static/description/yape.png"/>
 
     </record>

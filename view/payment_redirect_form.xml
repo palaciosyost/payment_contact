@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <!-- <record id="payment_yape_redirect_form" model="ir.ui.view">
-    <field name="name">payment.yape.redirect.form</field>
-    <field name="model">payment.transaction</field>
-    <field name="arch" type="xml">
-      <form t-name="payment_yape.redirect_form">
-        <form t-att-action="tx.get_form_action_url()" method="POST" id="o_payment_form" t-att-data-oe-model="'payment.transaction'" t-att-data-oe-id="tx.id">
-          <input type="hidden" name="reference" t-att-value="tx.reference"/>
-          <div>
-              <p>Gracias por usar Yape. Escanea el código QR o sigue las instrucciones.</p>
-              <img src="/payment_contact/static/description/yape.png" width="200"/>
-          </div>
+  <template id="redirect_form">
+        <form t-att-action="api_url" method="post">
+            <input type="hidden" name="reference" t-att-value="reference"/>
         </form>
-      </form>
-    </field>
-  </record> -->
+    </template>
 </odoo>

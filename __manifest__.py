@@ -24,7 +24,6 @@
     'application': False,
     'assets': {
         'web.assets_frontend' : [
-            'payment/static/src/js/payment_form.js',
             '/payment_contact/static/src/js/index.js',
             '/payment_contact/static/src/js/payment.js',
         ]

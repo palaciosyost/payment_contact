@@ -1,50 +1,70 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields
 
+# _logger = logging.getLogger(__name__)
 
 class PaymentProviderYape(models.Model):
     _inherit = 'payment.provider'
 
-    code = fields.Selection(selection_add=[('yape', "Yape")], ondelete={'yape': 'set default'})
+    code = fields.Selection(
+        selection_add=[('yape', "Yape")],
+        ondelete={'yape': 'set default'}
+    )
     yape_qr = fields.Binary(string="Código QR")
     yape_holder_name = fields.Char(string="Nombre del Titular")
-    yape_phone = fields.Char(string="Teléfono del Titular")
+    yape_phone = fields.Char(string="Teléfono")
 
-    def _get_default_payment_method_type(self):
+
+    def _get_default_payment_method_code(self):
         if self.code == 'yape':
-            return 'form'
-        return super()._get_default_payment_method_type()
+            return 'manual'
+        return super()._get_default_payment_method_code()
 
-    def _get_payment_method_information(self):
-        res = super()._get_payment_method_information()
-        res['yape'] = {
-            'mode': 'form',
-            'support_tokenization': False,
-            'auth_required': False,
-        }
-        return res
+    def _get_redirect_form_html(self, tx_values):
+        if self.code == 'yape':
+            return """
+                <form id="o_payment_redirect_form" action="/payment/yape/redirect" method="get">
+                </form>
+                <script>
+                    document.getElementById("o_payment_redirect_form").submit();
+                </script>
+            """
+        return super()._get_redirect_form_html(tx_values)
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
-    def _get_specific_rendering_values(self, processing_values):
-        self.ensure_one()
-        return {
-            'reference': self.reference,
-            'amount': self.amount,
-            'currency': self.currency_id.name,
-        }
 
-    def _get_specific_rendering_context(self):
-        self.ensure_one()
+    def _get_processing_values(self):
         if self.provider_code == 'yape':
-            return {
-                'return_url': '/shop/confirmation',
-            }
-        return super()._get_specific_rendering_context()
+            """Return the values used to process the transaction."""
+            import pprint
+            import logging
 
-    def _process_feedback_data(self, data):
-        if self.provider_code != 'yape':
-            return super()._process_feedback_data(data)
-        self._set_transaction_done()
-        if self.sale_order_id:
-            self.sale_order_id.write({'state': 'sent'})
-        return True
+            _logger = logging.getLogger(__name__)
+            self.ensure_one()
+
+            processing_values = {
+                'provider_id': self.provider_id.id,
+                'provider_code': self.provider_code,
+                'reference': self.reference,
+                'amount': self.amount,
+                'currency_id': self.currency_id.id,
+                'partner_id': self.partner_id.id,
+            }
+
+            # 🔁 Agrega datos específicos del proveedor
+            processing_values.update(self._get_specific_processing_values(processing_values))
+
+            # ✅ Agrega redirect_form_html directamente si es Yape
+            if self.provider_code == 'yape' and self.operation in ('online_redirect', 'validation'):
+                redirect_form_html = self.provider_id._get_redirect_form_html(processing_values)
+                processing_values.update(redirect_form_html=redirect_form_html)
+
+            _logger.info(
+                "🟡 Valores de procesamiento para transacción %s:\n%s",
+                self.reference,
+                pprint.pformat(processing_values),
+            )
+
+            return processing_values
+        return super()._get_processing_values()
