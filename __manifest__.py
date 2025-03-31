@@ -12,6 +12,7 @@
     ],
     'data': [
         'view/form_company_view.xml',
+        'view/payment_redirect_form.xml',
         'view/web/address_form_view.xml',
         'view/web/l10n_pe_website_sale_inherit.xml',
         "view/pagos_yape.xml",

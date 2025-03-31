@@ -44,7 +44,8 @@ class PaymentPortalYape(PaymentPortal):
 
             _logger.info(f"🔄 Redirigiendo a /shop/confirmation con la orden {order_id}")
 
-            return redirect("/shop/confirmation")
+            return request.redirect('/shop/confirmation')
+
 
         return super().shop_payment_transaction(order_id, access_token, **kwargs)
 
