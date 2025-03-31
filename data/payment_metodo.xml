@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data >
-    
-        <record id="payment_method_yape" model="payment.method">
-            <field name="name">Pago con Yape</field>
-            <field name="provider_code">pago_yape</field> <!-- Debe coincidir con tu código -->
-            <field name="payment_type">inbound</field>
-            <field name="active">True</field>
-        </record>
-    
-    </data>
+    <record id="payment_method_yape" model="payment.method">
+        <field name="name">Yape</field>
+        <field name="code">yape</field>
+        <field name="image" type="base64" file="payment_contact/static/description/yape.png"/>
+        <field name="active">True</field>
+        <field name="provider_ids" eval="[(4, ref('payment_provider_yape'))]"/>
+    </record>
 </odoo>

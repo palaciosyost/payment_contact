@@ -1,23 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data >
+    <record id="payment_provider_yape" model="payment.provider">
+        <field name="name">Pago con Yape</field>
+        <field name="code">yape</field>
+        <field name="state">enabled</field>
+        <field name="sequence">10</field>
+        <field name="module_id" ref="base.module_payment"/>
+        <!-- <field name="support_authorization" eval="False"/> -->
+        <field name="image_128" type="base64" file="payment_contact/static/description/yape.png"/>
 
-        <record id="payment_provider_yape" model="payment.provider">
-            <field name="name">Pago con Yape</field>
-            <field name="code">pago_yape</field>
-            <field name="state">enabled</field>
-            <field name="is_published">True</field>
-            <field name="company_id" ref="base.main_company"/>
-            <field name="support_tokenization">False</field>
-            <field name="image_128" type="base64" file="payment_contact/static/description/yape.png"/>
-            <field name="pre_msg">
-                <![CDATA[
-                    <p>Se enviará a un apartado para el envío de comprobante.</p>
-                ]]>
-            </field>
-        </record>
-
-
-
-    </data>
+    </record>
 </odoo>

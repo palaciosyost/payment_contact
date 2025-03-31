@@ -17,12 +17,15 @@
         "view/pagos_yape.xml",
         "data/payment_yape.xml",
         "data/payment_metodo.xml",
+        "view/web/template_pago.xml",
     ],
     'auto_install': False,
     'application': False,
     'assets': {
         'web.assets_frontend' : [
-            '/payment_contact/static/src/js/index.js'
+            'payment/static/src/js/payment_form.js',
+            '/payment_contact/static/src/js/index.js',
+            '/payment_contact/static/src/js/payment.js',
         ]
     }
 }

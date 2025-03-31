@@ -1,25 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-    
-        <record id="view_payment_provider_form_inherit_mi_proveedor" model="ir.ui.view">
-            <field name="name">payment.provider.form.inherit.mi.proveedor</field>
-            <field name="model">payment.provider</field>
-            <field name="inherit_id" ref="payment.payment_provider_form"/>
-            <field name="arch" type="xml">
-                <group name="provider_credentials" position="inside">
-                    <group invisible="code != 'pago_yape'">
-                        <field name="qr_yape" widget="image" />
-                        <field name="titular_yape"  />
-                        <field name="numero_yape"  />
-                    </group>
-                </group>
-            </field>
-        </record>    
-    
-    </data>
-    
-    
-
-
+    <record id="view_payment_provider_yape_form" model="ir.ui.view">
+        <field name="name">payment.provider.yape.form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="yape_qr"/>
+                <field name="yape_holder_name"/>
+                <field name="yape_phone"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

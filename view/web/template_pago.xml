@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="yape_payment_confirmation" name="Yape Payment Confirmation">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <h2 class="text-center">Pago con Yape</h2>
+                <p class="text-center">Tu orden ha sido enviada y estamos esperando la confirmación del pago.</p>
+
+                <div class="text-center">
+                    <img src="/payment_yape/static/src/img/yape_qr.png" alt="Código QR de Yape" width="200"/>
+                </div>
+
+                <p class="mt-3 text-center">
+                    Escanea el código QR con Yape y envíanos el comprobante para validar tu compra.
+                </p>
+
+                <div class="text-center">
+                    <a href="/shop" class="btn btn-primary">Volver a la tienda</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
