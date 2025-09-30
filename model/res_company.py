@@ -10,3 +10,4 @@ class ResCompany(models.Model):
         string="API a usar"
     )
     token_api = fields.Char(string="Token")
+    token_api_yape = fields.Char(string="Token")

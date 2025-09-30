@@ -19,6 +19,7 @@
         "data/payment_yape.xml",
         "data/payment_metodo.xml",
         "view/web/template_pago.xml",
+        "view/web/qweb_yape_validation.xml",
     ],
     'auto_install': False,
     'application': False,

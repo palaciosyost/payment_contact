@@ -37,9 +37,7 @@ class SunatApiController(http.Controller):
     @http.route('/shop/cart/whatsapp', type='http', auth="public", website=True)
     def whatsapp_cart(self, **kw):
         # Obtener la cotización activa (en estado 'draft') del usuario actual
-        sale_order_id = request.session.get('sale_last_order_id')
-        order = request.env['sale.order'].sudo().browse(sale_order_id) if sale_order_id else None
-
+        order = request.website.sale_get_order()
         
         if not order:
             return request.redirect('/shop/cart')  # Redirigir al carrito si no hay orden
@@ -54,8 +52,8 @@ class SunatApiController(http.Controller):
         for linea in productos:
             nombre_producto = linea.product_id.name
             cantidad = linea.product_uom_qty
-            precio_unitario = linea.price_unit
-            subtotal = linea.price_subtotal
+            precio_unitario = linea.price_unit - (linea.discount * linea.price_unit / 100)
+            subtotal = linea.price_total
 
             mensaje += f"*{nombre_producto}* \n"
             mensaje += f"  Cantidad: {cantidad}\n"
@@ -67,10 +65,12 @@ class SunatApiController(http.Controller):
 
         # Codificar el mensaje para incluirlo en un enlace de WhatsApp
         mensaje_codificado = urllib.parse.quote(mensaje)
-        numero_telefono = "51918592638"  # Reemplaza con el número de teléfono o permite ingresarlo dinámicamente
+        numero_telefono = "51941476469"  # Reemplaza con el número de teléfono o permite ingresarlo dinámicamente
         enlace_whatsapp = f"https://wa.me/{numero_telefono}?text={mensaje_codificado}"
         print('---------------------------------------- ')
         print(enlace_whatsapp)
+        order.write({'state': 'sent'})
+        request.session['sale_order_id'] = None
         # Redirigir al usuario a WhatsApp
         return f"""
             <html>
@@ -129,7 +129,7 @@ class SunatApiController(http.Controller):
                 headers=[('Content-Type', 'application/json')]
             )
 
-        token_api = request.env.company.token_api
+        token_api = request.env.company.token_api_yape
         if not token_api:
             return request.make_response(
                 '{"error": "Token API no configurado en la compañía"}',
